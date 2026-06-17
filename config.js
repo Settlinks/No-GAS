@@ -20,7 +20,7 @@
  *     repo/custom domain that only ever shows their own catalog).
  */
 window.APP_CONFIG = {
-  SUPABASE_URL: 'https://YOUR-PROJECT-REF.supabase.co',
-  SUPABASE_ANON_KEY: 'YOUR-ANON-PUBLIC-KEY',
+  SUPABASE_URL: 'https://drqrkgavtqeyoykktkyo.supabase.co',
+  SUPABASE_ANON_KEY: 'sb_publishable_sX1kIW29T_PboktLin3kSA_JfrbKalj',
   DEFAULT_STORE_SLUG: null
 };
