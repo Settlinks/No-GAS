@@ -1,0 +1,1 @@
+Fix: Comprar button used JSON.stringify inside a double-quoted onclick attribute, which broke the handler; switched to a delegated listener with a data-id attribute (matches the existing btn-share pattern)
