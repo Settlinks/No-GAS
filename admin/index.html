@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel de administración</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<div id="bootState" class="full-state">
+  <div class="box">
+    <div class="ic">⏳</div>
+    <h2>Cargando tu panel…</h2>
+    <p>Un momento.</p>
+  </div>
+</div>
+
+<div id="admToast"></div>
+
+<div class="shell" id="shell" hidden>
+
+  <div class="drawer-backdrop nav-scrim" id="navScrim"></div>
+
+  <!-- ═══ NAV ═══ -->
+  <aside class="nav" id="navEl">
+    <div class="nav-brand">
+      <img class="logo" id="navLogo" style="display:none" alt="">
+      <div>
+        <div class="name" id="navStoreName">Tu catálogo</div>
+        <div class="tag">Admin</div>
+      </div>
+    </div>
+
+    <nav class="nav-list">
+      <button class="nav-item is-active" data-panel="resumen"><span class="ic">▦</span> Resumen</button>
+      <button class="nav-item" data-panel="productos"><span class="ic">▣</span> Productos</button>
+      <button class="nav-item" data-panel="categorias"><span class="ic">▤</span> Categorías</button>
+      <button class="nav-item" data-panel="apariencia"><span class="ic">◐</span> Apariencia</button>
+      <button class="nav-item" data-panel="tienda"><span class="ic">⚑</span> Tienda</button>
+    </nav>
+
+    <div class="nav-foot">
+      <div class="nav-account" id="navAccountEmail">—</div>
+      <button class="btn btn-ghost" id="btnLogout" style="width:100%;justify-content:flex-start">⎋ Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <!-- ═══ CONTENT ═══ -->
+  <div class="content">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="nav-toggle" id="navToggle" aria-label="Menú">☰</button>
+        <h2 id="topbarTitle">Resumen</h2>
+      </div>
+      <div class="topbar-actions">
+        <a class="btn" id="viewCatalogLink" href="#" target="_blank" rel="noopener">Ver catálogo ↗</a>
+      </div>
+    </div>
+
+    <div class="main">
+
+      <!-- ═══ RESUMEN ═══ -->
+      <section class="panel is-active" id="panel-resumen">
+        <p class="panel-intro" id="resumenIntro">Así está tu catálogo en este momento.</p>
+        <div class="stat-grid">
+          <div class="stat-tile"><div class="v" id="statTotal">—</div><div class="l">Productos totales</div></div>
+          <div class="stat-tile"><div class="v" id="statVisible">—</div><div class="l">Visibles en el catálogo</div></div>
+          <div class="stat-tile"><div class="v" id="statOut">—</div><div class="l">Agotados</div></div>
+          <div class="stat-tile"><div class="v" id="statCats">—</div><div class="l">Categorías</div></div>
+        </div>
+        <div class="quick-links">
+          <button class="btn btn-accent" id="qlNewProduct">+ Nuevo producto</button>
+          <button class="btn" id="qlAppearance">◐ Editar apariencia</button>
+          <button class="btn" id="qlShare">↗ Copiar enlace del catálogo</button>
+        </div>
+      </section>
+
+      <!-- ═══ PRODUCTOS ═══ -->
+      <section class="panel" id="panel-productos">
+        <div class="toolbar">
+          <div class="toolbar-filters">
+            <input class="input" id="prodSearch" type="text" placeholder="Buscar producto…">
+            <select class="input" id="prodCatFilter" style="max-width:180px"><option value="">Todas las categorías</option></select>
+          </div>
+          <button class="btn btn-accent" id="btnNewProduct">+ Nuevo producto</button>
+        </div>
+        <div class="row-list" id="productList"></div>
+        <div class="empty-state" id="productEmpty" hidden>
+          <div class="ic">🗂️</div>
+          <p>Aún no tienes productos. Agrega el primero para que aparezca en tu catálogo.</p>
+          <button class="btn btn-accent" id="emptyNewProduct">+ Agregar producto</button>
+        </div>
+      </section>
+
+      <!-- ═══ CATEGORÍAS ═══ -->
+      <section class="panel" id="panel-categorias">
+        <p class="panel-intro">Organiza tus productos en categorías simples. Aparecerán como filtro en tu catálogo público.</p>
+        <div class="row-list" id="categoryList"></div>
+        <div class="add-cat-row" style="border:1px solid var(--adm-border);border-top:none;border-radius:0 0 var(--r-card) var(--r-card)">
+          <input class="input" id="newCatName" type="text" placeholder="Nombre de la nueva categoría, ej. Pasteles">
+          <button class="btn btn-accent" id="btnAddCat">+ Agregar</button>
+        </div>
+      </section>
+
+      <!-- ═══ APARIENCIA ═══ -->
+      <section class="panel" id="panel-apariencia">
+        <p class="panel-intro">El estilo visual de tu catálogo público. Los cambios se ven primero aquí, en la vista previa.</p>
+
+        <div class="card">
+          <h3>Vista previa</h3>
+          <p class="hint">Así se verán tus productos con estos colores y tipografía.</p>
+          <div class="theme-preview" id="themePreview">
+            <div class="tp-header"><span class="tp-dot"></span> <span id="tpStoreName">TU TIENDA</span></div>
+            <div class="tp-card">
+              <div class="tp-img"></div>
+              <div class="tp-body">
+                <div class="tp-name">Producto de muestra</div>
+                <div class="tp-price">$299.00</div>
+                <div class="tp-btn">Preguntar</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Logo y favicon</h3>
+          <p class="hint">El logo aparece en el encabezado de tu catálogo. El favicon es el ícono pequeño en la pestaña del navegador.</p>
+          <div class="field">
+            <label>Logo</label>
+            <div class="dropzone" id="logoDropzone">
+              <img class="preview" id="logoPreview" style="display:none" alt="">
+              <span class="dz-text" id="logoDzText"><b>Haz clic para subir</b> o arrastra una imagen aquí.</span>
+            </div>
+            <input type="file" id="logoInput" accept="image/*" hidden>
+            <button type="button" class="dz-remove" id="logoRemoveBtn" style="display:none;align-self:flex-start">Quitar logo</button>
+          </div>
+          <div class="field">
+            <label>Favicon</label>
+            <div class="dropzone" id="faviconDropzone">
+              <img class="preview" id="faviconPreview" style="display:none" alt="">
+              <span class="dz-text" id="faviconDzText"><b>Haz clic para subir</b> o arrastra una imagen aquí.</span>
+            </div>
+            <input type="file" id="faviconInput" accept="image/*" hidden>
+            <button type="button" class="dz-remove" id="faviconRemoveBtn" style="display:none;align-self:flex-start">Quitar favicon</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Colores y tipografía</h3>
+          <div class="field">
+            <label>Modo</label>
+            <select id="themeMode">
+              <option value="dark">Oscuro</option>
+              <option value="light">Claro</option>
+            </select>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Color de acento</label>
+              <div class="color-field">
+                <input type="color" id="accentColorPicker">
+                <input type="text" id="accentColor" placeholder="#63d2ff">
+              </div>
+            </div>
+            <div class="field">
+              <label>Color de fondo</label>
+              <div class="color-field">
+                <input type="color" id="bgColorPicker">
+                <input type="text" id="bgColor" placeholder="#1a1a1a">
+              </div>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Color de superficie (tarjetas)</label>
+              <div class="color-field">
+                <input type="color" id="surfaceColorPicker">
+                <input type="text" id="surfaceColor" placeholder="#252525">
+              </div>
+            </div>
+            <div class="field">
+              <label>Color de texto</label>
+              <div class="color-field">
+                <input type="color" id="textColorPicker">
+                <input type="text" id="textColor" placeholder="#eef2f7">
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Estilo tipográfico</label>
+            <select id="fontPreset">
+              <option value="Outfit|DM Mono">Outfit + DM Mono (predeterminado)</option>
+              <option value="Poppins|Space Mono">Poppins + Space Mono</option>
+              <option value="Playfair Display|IBM Plex Mono">Playfair Display + IBM Plex Mono</option>
+              <option value="Inter|JetBrains Mono">Inter + JetBrains Mono</option>
+              <option value="Fraunces|Space Mono">Fraunces + Space Mono</option>
+            </select>
+          </div>
+          <label class="check-row" style="margin-top:6px">
+            <input type="checkbox" id="bannerAutoplay"> El banner de inicio rota automáticamente
+          </label>
+          <div class="form-actions">
+            <button class="btn btn-accent" id="btnSaveAppearance">Guardar apariencia</button>
+          </div>
+          <div class="form-msg" id="appearanceMsg"></div>
+        </div>
+      </section>
+
+      <!-- ═══ TIENDA ═══ -->
+      <section class="panel" id="panel-tienda">
+        <p class="panel-intro">Información general de tu negocio y cómo te contactan tus clientes.</p>
+
+        <div class="card">
+          <h3>Datos del negocio</h3>
+          <div class="field">
+            <label>Nombre del negocio</label>
+            <input type="text" id="storeName" placeholder="Panadería Doña Lupe">
+          </div>
+          <div class="field">
+            <label>Frase corta (opcional)</label>
+            <input type="text" id="storeTagline" placeholder="Pan recién horneado todos los días">
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Tipo de negocio</label>
+              <input type="text" id="storeBizType" list="bizTypeOptions" placeholder="Panadería">
+              <datalist id="bizTypeOptions">
+                <option value="Panadería"><option value="Repostería"><option value="Boutique de ropa">
+                <option value="Calzado"><option value="Joyería y accesorios"><option value="Electrónica">
+                <option value="Belleza y cuidado personal"><option value="Mueblería"><option value="Florería">
+                <option value="Papelería"><option value="Juguetería"><option value="Tienda de mascotas">
+                <option value="Artesanías">
+              </datalist>
+            </div>
+            <div class="field">
+              <label>Moneda</label>
+              <input type="text" id="storeCurrency" list="currencyOptions" placeholder="MXN">
+              <datalist id="currencyOptions">
+                <option value="MXN"><option value="USD"><option value="EUR"><option value="GTQ">
+                <option value="HNL"><option value="COP"><option value="ARS"><option value="CLP">
+                <option value="PEN"><option value="BRL"><option value="CRC"><option value="DOP">
+              </datalist>
+            </div>
+          </div>
+          <div class="field">
+            <label>Idioma del catálogo</label>
+            <select id="storeLocale">
+              <option value="es">Español</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-accent" id="btnSaveStore">Guardar datos del negocio</button>
+          </div>
+          <div class="form-msg" id="storeMsg"></div>
+        </div>
+
+        <div class="card">
+          <h3>Cómo te contactan los clientes</h3>
+          <p class="hint">Tu catálogo no tiene carrito de compras: el cliente pregunta por un producto y tú cierras la venta directamente.</p>
+          <div class="field">
+            <label>Método de contacto</label>
+            <select id="contactMethod">
+              <option value="whatsapp">WhatsApp</option>
+              <option value="email">Correo electrónico</option>
+              <option value="phone">Teléfono</option>
+              <option value="link">Enlace personalizado</option>
+            </select>
+          </div>
+          <div class="field">
+            <label id="contactValueLabel">Número de WhatsApp</label>
+            <input type="text" id="contactValue" placeholder="529991234567">
+            <span class="sub" id="contactValueHint">Incluye el código de país, sin espacios ni símbolos. Ej: 52 para México.</span>
+          </div>
+          <div class="field">
+            <label>Mensaje personalizado (opcional)</label>
+            <textarea id="contactMessage" placeholder="Hola {store}, me interesa: {name} ({price}). ¿Sigue disponible?"></textarea>
+            <span class="sub">Puedes usar {store}, {name} y {price}. Si lo dejas vacío, usamos un mensaje predeterminado.</span>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-accent" id="btnSaveContact">Guardar contacto</button>
+          </div>
+          <div class="form-msg" id="contactMsg"></div>
+        </div>
+
+        <div class="card">
+          <h3>Cuenta</h3>
+          <p class="hint" id="accountEmailLine">—</p>
+          <a class="btn" href="set-password.html">Cambiar contraseña</a>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PRODUCT DRAWER ═══ -->
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+<div class="drawer" id="productDrawer" role="dialog" aria-modal="true">
+  <div class="drawer-head">
+    <h3 id="drawerTitle">Nuevo producto</h3>
+    <button class="btn btn-icon btn-ghost" id="drawerClose" aria-label="Cerrar">✕</button>
+  </div>
+  <form id="productForm">
+    <div class="drawer-body">
+      <input type="hidden" id="f_productId">
+
+      <div class="field">
+        <label>Foto del producto</label>
+        <div class="dropzone" id="imgDropzone">
+          <img class="preview" id="imgPreview" style="display:none" alt="">
+          <span class="dz-text" id="imgDzText"><b>Haz clic para subir</b> o arrastra una foto aquí.</span>
+        </div>
+        <input type="file" id="imgInput" accept="image/*" hidden>
+        <button type="button" class="dz-remove" id="imgRemoveBtn" style="display:none;align-self:flex-start">Quitar foto</button>
+      </div>
+
+      <div class="field">
+        <label>Nombre*</label>
+        <input type="text" id="f_name" required placeholder="Pastel de chocolate">
+      </div>
+
+      <div class="field">
+        <label>Descripción</label>
+        <textarea id="f_description" placeholder="Bizcocho de chocolate con relleno de cajeta…"></textarea>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Categoría</label>
+          <select id="f_category"><option value="">Sin categoría</option></select>
+        </div>
+        <div class="field">
+          <label>Marca</label>
+          <input type="text" id="f_brand">
+        </div>
+      </div>
+
+      <div class="field-row cols-3">
+        <div class="field">
+          <label>Precio*</label>
+          <input type="number" id="f_price" min="0" step="0.01" required placeholder="0.00">
+        </div>
+        <div class="field">
+          <label>Precio anterior</label>
+          <input type="number" id="f_compareAt" min="0" step="0.01" placeholder="Opcional">
+        </div>
+        <div class="field">
+          <label>SKU</label>
+          <input type="text" id="f_sku" placeholder="Opcional">
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Talla / tamaño</label>
+          <input type="text" id="f_size" placeholder="Opcional">
+        </div>
+        <div class="field">
+          <label>Color</label>
+          <input type="text" id="f_color" placeholder="Opcional">
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Condición</label>
+          <input type="text" id="f_condition" list="conditionOptions" placeholder="Nuevo">
+          <datalist id="conditionOptions">
+            <option value="Nuevo"><option value="Usado"><option value="Como nuevo"><option value="Reacondicionado">
+          </datalist>
+        </div>
+        <div class="field">
+          <label>Disponibilidad</label>
+          <select id="f_stock">
+            <option value="in_stock">Disponible</option>
+            <option value="out_of_stock">Agotado</option>
+            <option value="preorder">Preventa</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Etiqueta (ej. "Oferta")</label>
+          <input type="text" id="f_badgeText" placeholder="Opcional">
+        </div>
+        <div class="field">
+          <label>Color de etiqueta</label>
+          <div class="color-field">
+            <input type="color" id="f_badgeColor" value="#f87171">
+          </div>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Orden</label>
+          <input type="number" id="f_sortOrder" value="0" step="1">
+        </div>
+        <div class="field">
+          <label>Categoría Google/Meta (opcional)</label>
+          <input type="text" id="f_gmc" list="gmcOptions" placeholder="Para anuncios, opcional">
+          <datalist id="gmcOptions"></datalist>
+        </div>
+      </div>
+
+      <label class="check-row">
+        <input type="checkbox" id="f_featured"> Destacar en el banner de inicio
+      </label>
+      <label class="check-row">
+        <input type="checkbox" id="f_visible" checked> Visible en el catálogo
+      </label>
+      <div class="form-msg" id="productMsg"></div>
+    </div>
+    <div class="drawer-foot">
+      <button type="button" class="btn btn-danger" id="btnDeleteProduct" style="display:none">Eliminar</button>
+      <div style="display:flex;gap:10px;margin-left:auto">
+        <button type="button" class="btn" id="btnCancelProduct">Cancelar</button>
+        <button type="submit" class="btn btn-accent" id="btnSaveProduct">Guardar producto</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="../config.js"></script>
+<script src="../shared/supabase-client.js"></script>
+<script src="../shared/utils.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
