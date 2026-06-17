@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Catálogo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="catalog.css">
+</head>
+<body>
+
+<div class="bg-canvas"></div>
+<div class="bg-dots"></div>
+<div id="toast"></div>
+
+<!-- ═══ HEADER ═══ -->
+<header>
+  <div class="hdr-left">
+    <img id="hdrLogo" class="hdr-logo" style="display:none" alt="">
+    <div class="hdr-dot" id="hdrDot"></div>
+    <span class="hdr-title" id="hdrTitle">Catálogo</span>
+  </div>
+  <button id="filterToggle" aria-label="Filtros">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="9" y1="18" x2="15" y2="18"/></svg>
+    <span id="filterToggleLabel">Filtros</span>
+  </button>
+  <div class="search-wrap">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="search" placeholder="Buscar..." autocomplete="off">
+  </div>
+</header>
+
+<div id="sidebarBackdrop"></div>
+
+<div class="page-body">
+
+  <aside class="sidebar" id="sidebar" role="complementary">
+    <div class="sidebar-header">
+      <h3 id="sidebarTitle">Filtrar por</h3>
+      <button class="sidebar-close" id="sidebarClose" aria-label="Cerrar">✕</button>
+    </div>
+
+    <div class="filter-group" id="groupCategory">
+      <label for="categoryFilter" id="lblCategory">Categoría</label>
+      <select id="categoryFilter"><option value="">Todo</option></select>
+    </div>
+    <div class="filter-group" id="groupBrand">
+      <label for="brandFilter" id="lblBrand">Marca</label>
+      <select id="brandFilter"><option value="">Todo</option></select>
+    </div>
+    <div class="filter-group" id="groupCondition">
+      <label for="condFilter" id="lblCondition">Condición</label>
+      <select id="condFilter"><option value="">Todo</option></select>
+    </div>
+    <div class="filter-group" id="groupStock">
+      <label for="stockFilter" id="lblStock">Disponibilidad</label>
+      <select id="stockFilter"><option value="">Todo</option></select>
+    </div>
+    <div class="filter-group" id="groupPrice">
+      <label for="priceFilter" id="lblPrice">Precio máx.</label>
+      <input type="number" id="priceFilter" min="0" placeholder="Ej: 500">
+    </div>
+
+    <div class="sidebar-actions">
+      <button id="desktopClear" class="btn-clear">↺ <span id="lblClear1">Borrar todo</span></button>
+      <div class="mobile-filter-actions">
+        <button class="btn-apply" id="mobileApply">✓ <span id="lblApply">Aplicar</span></button>
+        <button class="btn-clear" id="mobileClear">↺ <span id="lblClear2">Borrar todo</span></button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main" role="main">
+    <div class="main-scroll">
+
+      <div class="banner-section" id="bannerSection">
+        <div class="banner-track-wrap" id="bannerWrap">
+          <div class="banner-track" id="bannerTrack"></div>
+          <button class="bnav bnav-prev" id="bnavPrev" aria-label="Anterior">❮</button>
+          <button class="bnav bnav-next" id="bnavNext" aria-label="Siguiente">❯</button>
+        </div>
+        <div class="banner-dots" id="bannerDots"></div>
+        <div class="banner-desc"><p id="bannerDesc"></p></div>
+      </div>
+
+      <div id="totalCount"></div>
+      <div id="grid" class="grid"></div>
+      <div class="pagination" id="pagination"></div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ═══ PRODUCT DETAIL MODAL ═══ -->
+<div id="bannerModal" role="dialog" aria-modal="true">
+  <div class="bmodal-box" id="bmodalBox">
+    <div class="bmodal-img"><img id="bmodalImg" src="" alt=""></div>
+    <div class="bmodal-body">
+      <div class="bmodal-name" id="bmodalName"></div>
+      <div class="bmodal-meta" id="bmodalMeta"></div>
+      <div class="bmodal-price" id="bmodalPrice"></div>
+      <div class="bmodal-stock" id="bmodalStock"></div>
+      <div class="bmodal-desc" id="bmodalDescText"></div>
+    </div>
+    <div class="bmodal-actions">
+      <button class="bmodal-buy" id="bmodalBuy">Comprar →</button>
+      <button class="bmodal-share" id="bmodalShare" aria-label="Compartir">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        <span id="bmodalShareLabel">Compartir</span>
+      </button>
+      <button class="bmodal-close-btn" id="bmodalClose">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ INQUIRY CART ═══ -->
+<button class="cart-fab" id="cartFab">
+  🛒 <span id="cartFabLabel">Mi pedido</span> <span class="count" id="cartFabCount">0</span>
+</button>
+
+<div id="cartPanel">
+  <div class="cart-box">
+    <div class="cart-head">
+      <h3 id="cartTitle">Mi pedido</h3>
+      <button class="cart-close" id="cartClose">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-foot">
+      <div class="cart-total"><span id="cartTotalLabel">Total</span> <b id="cartTotalValue">$0</b></div>
+      <button class="btn-send-cart" id="cartSendBtn">Enviar pedido</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script src="shared/supabase-client.js"></script>
+<script src="shared/theme.js"></script>
+<script src="shared/utils.js"></script>
+<script src="catalog.js"></script>
+</body>
+</html>

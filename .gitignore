@@ -1,0 +1,10 @@
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# In case any tooling gets added later
+node_modules/
+.env
+.env.local
