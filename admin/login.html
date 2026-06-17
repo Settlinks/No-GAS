@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel de administración</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="auth-body">
+
+<div class="auth-card">
+  <div class="auth-mark"><span class="auth-dot"></span> ADMIN</div>
+  <h1>Panel de administración</h1>
+  <p class="auth-sub" id="authSub">Inicia sesión para editar tu catálogo.</p>
+
+  <form id="loginForm" class="auth-form">
+    <label for="email">Correo electrónico</label>
+    <input type="email" id="email" required autocomplete="email" placeholder="tu@negocio.com">
+
+    <label for="password">Contraseña</label>
+    <input type="password" id="password" required autocomplete="current-password" placeholder="••••••••">
+
+    <button type="submit" class="btn-primary" id="loginBtn">Iniciar sesión</button>
+    <div class="auth-msg" id="authMsg"></div>
+  </form>
+
+  <form id="resetForm" class="auth-form" hidden>
+    <label for="resetEmail">Correo electrónico</label>
+    <input type="email" id="resetEmail" required autocomplete="email" placeholder="tu@negocio.com">
+    <button type="submit" class="btn-primary" id="resetBtn">Enviar enlace</button>
+    <div class="auth-msg" id="resetMsg"></div>
+  </form>
+
+  <button type="button" class="link-btn" id="toggleReset">¿Olvidaste tu contraseña?</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="../config.js"></script>
+<script src="../shared/supabase-client.js"></script>
+<script>
+(function () {
+  const loginForm  = document.getElementById('loginForm');
+  const resetForm  = document.getElementById('resetForm');
+  const toggleBtn  = document.getElementById('toggleReset');
+  const authSub    = document.getElementById('authSub');
+  const authMsg    = document.getElementById('authMsg');
+  const resetMsg   = document.getElementById('resetMsg');
+
+  // Already signed in? Skip straight to the dashboard.
+  window.db.auth.getSession().then(({ data }) => {
+    if (data && data.session) location.href = 'index.html';
+  });
+
+  toggleBtn.addEventListener('click', () => {
+    const showingLogin = !loginForm.hidden;
+    loginForm.hidden = showingLogin;
+    resetForm.hidden = !showingLogin;
+    toggleBtn.textContent = showingLogin ? 'Volver a iniciar sesión' : '¿Olvidaste tu contraseña?';
+    authSub.textContent = showingLogin
+      ? 'Te enviaremos un enlace para crear una nueva contraseña.'
+      : 'Inicia sesión para editar tu catálogo.';
+    authMsg.textContent = ''; resetMsg.textContent = '';
+  });
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('loginBtn');
+    btn.disabled = true; btn.textContent = 'Entrando…';
+    authMsg.textContent = ''; authMsg.className = 'auth-msg';
+
+    const { error } = await window.db.auth.signInWithPassword({
+      email: document.getElementById('email').value.trim(),
+      password: document.getElementById('password').value
+    });
+
+    if (error) {
+      authMsg.textContent = 'Correo o contraseña incorrectos.';
+      authMsg.className = 'auth-msg is-error';
+      btn.disabled = false; btn.textContent = 'Iniciar sesión';
+      return;
+    }
+    location.href = 'index.html';
+  });
+
+  resetForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('resetBtn');
+    btn.disabled = true; btn.textContent = 'Enviando…';
+    resetMsg.textContent = ''; resetMsg.className = 'auth-msg';
+
+    const redirectTo = new URL('set-password.html', location.href).href;
+    const { error } = await window.db.auth.resetPasswordForEmail(
+      document.getElementById('resetEmail').value.trim(),
+      { redirectTo }
+    );
+
+    btn.disabled = false; btn.textContent = 'Enviar enlace';
+    if (error) {
+      resetMsg.textContent = 'No se pudo enviar el enlace. Intenta de nuevo.';
+      resetMsg.className = 'auth-msg is-error';
+    } else {
+      resetMsg.textContent = 'Listo. Revisa tu correo para continuar.';
+      resetMsg.className = 'auth-msg is-ok';
+    }
+  });
+})();
+</script>
+</body>
+</html>
