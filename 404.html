@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Página no encontrada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Outfit',sans-serif;background:#1a1a1a;color:#eef2f7;min-height:100dvh;
+    display:flex;align-items:center;justify-content:center;padding:24px}
+  .box{max-width:420px;width:100%;text-align:center;background:rgba(38,38,42,0.92);
+    border:1px solid rgba(99,210,255,0.14);border-radius:16px;padding:40px 32px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.4)}
+  .icon{font-size:34px;margin-bottom:14px}
+  h1{font-size:18px;font-weight:600;margin-bottom:10px}
+  p{font-size:13.5px;color:#9ab4c6;line-height:1.65;margin-bottom:24px}
+  .links{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  a{display:inline-block;padding:11px 20px;background:rgba(99,210,255,0.13);color:#63d2ff;
+    border:1px solid rgba(99,210,255,0.36);border-radius:10px;text-decoration:none;
+    font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+    transition:background .15s ease,color .15s ease}
+  a:hover{background:#63d2ff;color:#06141a}
+</style>
+</head>
+<body>
+  <div class="box">
+    <div class="icon">🧭</div>
+    <h1>Página no encontrada</h1>
+    <p>El enlace que abriste no existe o ya no está disponible. Si buscabas un catálogo, intenta desde el inicio.</p>
+    <div class="links">
+      <a id="homeLink" href="/">Ir al inicio</a>
+      <a id="adminLink" href="/admin/">Panel de administración</a>
+    </div>
+  </div>
+  <script>
+    // On a GitHub Pages *project* site (username.github.io/repo-name/...), the
+    // repo name is always the first path segment, no matter how deep the
+    // missing URL was. This finds it so the links above work correctly instead
+    // of pointing at the bare username.github.io root.
+    (function () {
+      var parts = location.pathname.split('/').filter(Boolean);
+      var base = parts.length ? location.origin + '/' + parts[0] + '/' : location.origin + '/';
+      document.getElementById('homeLink').href = base;
+      document.getElementById('adminLink').href = base + 'admin/';
+    })();
+  </script>
+</body>
+</html>
